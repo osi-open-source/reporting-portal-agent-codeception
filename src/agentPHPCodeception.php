@@ -17,7 +17,7 @@ use \Codeception\Event\PrintResultEvent as PrintResultEvent;
  *
  * @author Mikalai_Kabzar
  */
-class agentPHPCodeception extends \Codeception\Platform\Extension
+class ReportingPortalAgent extends \Codeception\Platform\Extension
 {
     const STRING_LIMIT = 20000;
     const COMMENT_STER_STRING = '$this->getScenario()->comment($description);';
@@ -218,7 +218,8 @@ class agentPHPCodeception extends \Codeception\Platform\Extension
     public function afterTestError(FailEvent $e)
     {
         if(empty($this->testItemID)) {
-            codecept_debug("No Reporting ID for test.");
+            codecept_debug("No Reporting ID for test." . $this->testName);
+            return;
         }
         self::$httpService->finishItem($this->testItemID, ItemStatusesEnum::STOPPED, $this->testDescription);
         $this->setFailedLaunch();
