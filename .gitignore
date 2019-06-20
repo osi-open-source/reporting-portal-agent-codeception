@@ -1,0 +1,6 @@
+vendor/
+build/
+.project
+.buildpath
+
+.settings/org.eclipse.wst.validation.prefs

@@ -1,0 +1,35 @@
+# Example of codeception.yml file to configure to work with EPAM Report Portal 
+#
+#extensions:
+#    enabled:
+#        - agentPHPCodeception
+#    config:
+#        agentPHPCodeception:
+#            UUID: 07104d6b-45a0-442f-b7ed-a79fa5321123
+#            host: https://rp.epam.com
+#            projectName: your_name_personal
+#            timeZone: .000+00:00
+#            launchName: test launch name !!!
+#            launchDescription: test launch description !!!
+
+paths:
+    tests: tests
+    output: tests/_output
+    data: tests/_data
+    support: tests/_support
+    envs: tests/_envs
+actor_suffix: Tester
+
+extensions:
+    enabled:
+        - Codeception\Extension\RunFailed
+        - agentPHPCodeception
+    config:
+        agentPHPCodeception:
+            UUID: 07104d6b-45a0-442f-b7ed-a79fa5321123
+            host: https://rp.epam.com
+            projectName: your_name_personal
+            timeZone: .000+00:00
+            launchName: test launch name !!!
+            launchDescription: test launch description !!!
+

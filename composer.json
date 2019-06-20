@@ -1,0 +1,30 @@
+{
+	"name" : "reportportal/codeception",
+	"type" : "library",
+	"description" : "Specific classes to integrate Codeception-based test framework with Report Portal (http://reportportal.io/).",
+	"keywords" : [
+		"Report",
+		"Reporting",
+		"Report Portal",
+		"Codeception"
+	],
+	"homepage" : "https://github.com/Mikalai-Kabzar/agent-php-Codeception",
+	"license" : "MIT",
+	"authors" : [{
+			"name" : "Kabzar Mikalai",
+			"email" : "loki.engine@mail.ru",
+			"role" : "Developer"
+		}
+	],
+	"minimum-stability": "stable",
+	"require" : {
+		"codeception/codeception": "*",
+    		//"codeception/base": "*",
+		"reportportal/basic" : "1.0.x-dev"
+	},
+	"autoload" : {
+		"classmap" : [
+			"src/"
+		]
+	}
+}
