@@ -35,6 +35,8 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
     private $launchDescription;
     private $testName;
     private $testDescription;
+    private $allowFailure;
+    private $connectionFailed;
 
     private $rootItemID;
     private $testItemID;
@@ -81,7 +83,9 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
         $timeZone = $this->config['timeZone'];
         $this->launchName = $this->config['launchName'];
         $this->launchDescription = $this->config['launchDescription'];
-        $isHTTPErrorsAllowed = false;
+        $this->allowFailure = $this->config['allowFailure'] ?? true;
+        $this->connectionFailed = false;
+        $isHTTPErrorsAllowed = true;
         $baseURI = sprintf(ReportPortalHTTPService::BASE_URI_TEMPLATE, $host);
         ReportPortalHTTPService::configureClient($UUID, $baseURI, $host, $timeZone, $projectName, $isHTTPErrorsAllowed);
         self::$httpService = new ReportPortalHTTPService();
@@ -96,8 +100,19 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
     {
         if ($this->isFirstSuite == false) {
             $this->configureClient();
-            self::$httpService->launchTestRun($this->launchName, $this->launchDescription, ReportPortalHTTPService::DEFAULT_LAUNCH_MODE, []);
+            try {
+                self::$httpService->launchTestRun($this->launchName, $this->launchDescription, ReportPortalHTTPService::DEFAULT_LAUNCH_MODE, []);
+            } catch (\Throwable $e) {
+                $this->connectionFailed = true;
+                if(!$this->allowFailure) {
+                    throw $e;
+                }
+                $this->writeln("Cannot connect to reporting portal. Exception message: " . $e->getMessage());
+            }
             $this->isFirstSuite = true;
+        }
+        if($this->connectionFailed) {
+            return;
         }
         $suiteBaseName = $e->getSuite()->getBaseName();
         $response = self::$httpService->createRootItem($suiteBaseName, $suiteBaseName . ' tests', []);
@@ -111,6 +126,9 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
      */
     public function afterSuite(SuiteEvent $e)
     {
+        if($this->connectionFailed) {
+            return;
+        }
         self::$httpService->finishRootItem();
     }
 
@@ -131,6 +149,9 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
      */
     public function beforeTest(TestEvent $e)
     {
+        if($this->connectionFailed) {
+            return;
+        }
         $this->stepCounter = 0;
         $testName = $e->getTest()->getMetadata()->getName();
 
@@ -186,6 +207,9 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
      */
     public function afterTestFail(FailEvent $e)
     {
+        if($this->connectionFailed) {
+            return;
+        }
         $this->setFailedLaunch();
         $trace = $e->getFail()->getTraceAsString();
         $message = $e->getFail()->getMessage();
@@ -217,6 +241,9 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
      */
     public function afterTestError(FailEvent $e)
     {
+        if($this->connectionFailed) {
+            return;
+        }
         if(empty($this->testItemID)) {
             codecept_debug("No Reporting ID for test." . $this->testName);
             return;
@@ -232,6 +259,9 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
      */
     public function afterTestIncomplete(FailEvent $e)
     {
+        if($this->connectionFailed) {
+            return;
+        }
         self::$httpService->finishItem($this->testItemID, ItemStatusesEnum::CANCELLED, $this->testDescription);
         $this->setFailedLaunch();
     }
@@ -243,6 +273,9 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
      */
     public function afterTestSkipped(FailEvent $e)
     {
+        if($this->connectionFailed) {
+            return;
+        }
         $this->beforeTest($e);
         $trace = $e->getFail()->getTraceAsString();
         $message = $e->getFail()->getMessage();
@@ -259,6 +292,9 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
      */
     public function afterTestSuccess(TestEvent $e)
     {
+        if($this->connectionFailed) {
+            return;
+        }
         self::$httpService->finishItem($this->testItemID, ItemStatusesEnum::PASSED, $this->testDescription);
     }
 
@@ -269,6 +305,9 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
      */
     public function beforeStep(StepEvent $e)
     {
+        if($this->connectionFailed) {
+            return;
+        }
         $this->stepCounter++;
         $pairs = explode(':', $e->getStep()->getLine());
         $fileAddress = $pairs[0];
@@ -293,6 +332,9 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
      */
     public function afterStep(StepEvent $e)
     {
+        if($this->connectionFailed) {
+            return;
+        }
         $this->stepCounter--;
         $stepToString = $e->getStep()->toString(self::STRING_LIMIT);
         $isFailedStep = $e->getStep()->hasFailed();
@@ -332,6 +374,9 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
      */
     public function afterTesting(PrintResultEvent $e)
     {
+        if($this->connectionFailed) {
+            return;
+        }
         $status = self::getStatusByBool($this->isFailedLaunch);
         $HTTPResult = self::$httpService->finishTestRun($status);
         self::$httpService->finishAll($HTTPResult);
