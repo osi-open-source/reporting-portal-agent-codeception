@@ -7,7 +7,7 @@ Specific class to integrate Codeception-based test framework with Report Portal 
     1) Update your project's composer.json file with next data:
         ```json
         "require": {
-            "osi-open-source/reporting-portal-agent-codeception": "^0.2"
+            "osi-open-source/reporting-portal-agent-codeception": "*"
         },
         ```
         Execute command:
