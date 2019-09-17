@@ -1,4 +1,4 @@
-# ReportPortal agent for Codeception
+# ReportPortal agent for PHP Codeception framework
 
 Specific class to integrate Codeception-based test framework with Report Portal (http://reportportal.io/).
 
