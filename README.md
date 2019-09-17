@@ -7,7 +7,7 @@ Specific class to integrate Codeception-based test framework with Report Portal 
     1) Update your project's composer.json file with next data:
         ```json
         "require": {
-            "ibpavlov/reporting-portal-agent-codeception": "^0.2"
+            "objectsystems/reporting-portal-agent-codeception": "^0.2"
         },
         ```
         Execute command:
@@ -16,7 +16,7 @@ Specific class to integrate Codeception-based test framework with Report Portal 
         ```
     2) Or execute command:
         ```shell script
-        composer require ibpavlov/reporting-portal-agent-codeception
+        composer require objectsystems/reporting-portal-agent-codeception
         ```
 2) Update codeception.yml file of your test framework according to codeception.yml file in this repository.
      ```yaml
