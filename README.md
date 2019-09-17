@@ -7,7 +7,7 @@ Specific class to integrate Codeception-based test framework with Report Portal 
     1) Update your project's composer.json file with next data:
         ```json
         "require": {
-            "objectsystems/reporting-portal-agent-codeception": "^0.2"
+            "osi-open-source/reporting-portal-agent-codeception": "^0.2"
         },
         ```
         Execute command:
@@ -16,7 +16,7 @@ Specific class to integrate Codeception-based test framework with Report Portal 
         ```
     2) Or execute command:
         ```shell script
-        composer require objectsystems/reporting-portal-agent-codeception
+        composer require osi-open-source/reporting-portal-agent-codeception
         ```
 2) Update codeception.yml file of your test framework according to codeception.yml file in this repository.
      ```yaml
@@ -25,7 +25,7 @@ Specific class to integrate Codeception-based test framework with Report Portal 
             - ...
             - ReportingPortalAgent:
                 UUID: 07104d6b-45a0-442f-b7ed-a79fa5321123
-                host: https://rp.epam.com
+                host: https://report-portal.example.com
                 projectName: your_name_personal
                 timeZone: .000+00:00
                 launchName: testLaunchName!!!
