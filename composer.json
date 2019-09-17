@@ -1,5 +1,5 @@
 {
-  "name": "ibpavlov/reporting-portal-agent-codeception",
+  "name": "objectsystems/reporting-portal-agent-codeception",
   "type": "library",
   "description": "Specific classes to integrate Codeception-based test framework with Report Portal (http://reportportal.io/).",
   "keywords": [
@@ -8,7 +8,7 @@
     "Report Portal",
     "Codeception"
   ],
-  "homepage": "https://github.com/ibpavlov/Agent-php-Codeception",
+  "homepage": "https://github.com/objectsystems/Agent-php-Codeception",
   "license": "MIT",
   "authors": [
     {
