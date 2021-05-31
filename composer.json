@@ -8,6 +8,12 @@
     "Report Portal",
     "Codeception"
   ],
+  "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/sunshine69/client-php.git"
+        }
+    ],
   "homepage": "https://github.com/sunshine69/reporting-portal-agent-codeception",
   "license": "MIT",
   "authors": [
@@ -22,10 +28,10 @@
       "role": "Developer"
     }
   ],
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "require": {
     "codeception/codeception": "*",
-    "reportportal/basic": "1.0.x-dev"
+    "sunshine69/reportportal/basic": "dev-tagging-support-and-more-attributes"
   },
   "autoload": {
     "classmap": [
