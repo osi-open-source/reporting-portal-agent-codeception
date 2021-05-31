@@ -102,14 +102,21 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
         if ($this->isFirstSuite == false) {
             $this->configureClient();
             try {
-                $tags = array(
-                    $suiteBaseName
-                );
-                $launchDescription = $this->launchDescription;
                 $lookupEnvVar = function($matches) {
-                    return getenv($matches[1]) ;
+                    return getenv($matches[1]);
                 };
-                $this->launchDescription = preg_replace_callback('/\{([^\{\}\s]+)\}/', $lookupEnvVar, $launchDescription);
+                $ptn = '/\{([^\{\}\s]+)\}/';
+                $tagsString = $this->config['tags'] ?? "";
+                if ($tagsString !== "") {
+                    $tagsString = preg_replace_callback($ptn, $lookupEnvVar, $tagsString);
+                    $tags = explode(",", $tagsString);
+                } else {
+                    $tags = array(
+                        $suiteBaseName
+                    );
+                }
+                $launchDescription = $this->launchDescription;
+                $this->launchDescription = preg_replace_callback($ptn, $lookupEnvVar, $launchDescription);
                 self::$httpService->launchTestRun($this->launchName, $this->launchDescription, ReportPortalHTTPService::DEFAULT_LAUNCH_MODE, $tags);
             } catch (\Throwable $e) {
                 $this->connectionFailed = true;
