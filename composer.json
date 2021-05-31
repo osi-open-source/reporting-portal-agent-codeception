@@ -1,5 +1,5 @@
 {
-  "name": "sunshine69/reporting-portal-agent-codeception",
+  "name": "osi-open-source/reporting-portal-agent-codeception",
   "type": "library",
   "description": "Specific classes to integrate Codeception-based test framework with Report Portal (http://reportportal.io/).",
   "keywords": [
@@ -8,7 +8,7 @@
     "Report Portal",
     "Codeception"
   ],
-  "homepage": "https://github.com/sunshine69/reporting-portal-agent-codeception",
+  "homepage": "https://github.com/osi-open-source/reporting-portal-agent-codeception",
   "license": "MIT",
   "authors": [
     {
