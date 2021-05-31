@@ -106,7 +106,10 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
                     $suiteBaseName
                 );
                 $launchDescription = $this->launchDescription;
-                $this->launchDescription = shell_exec("echo '$launchDescription' | envsubst \"$(env | sed -e 's/=.*//' -e 's/^/\$/g')\"");
+                $lookupEnvVar = function($matches) {
+                    return getenv($matches[1]) ;
+                };
+                $this->launchDescription = preg_replace_callback('/\{([^\{\}\s]+)\}/', $lookupEnvVar, $launchDescription);
                 self::$httpService->launchTestRun($this->launchName, $this->launchDescription, ReportPortalHTTPService::DEFAULT_LAUNCH_MODE, $tags);
             } catch (\Throwable $e) {
                 $this->connectionFailed = true;
