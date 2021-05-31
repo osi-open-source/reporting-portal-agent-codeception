@@ -1,5 +1,5 @@
 {
-  "name": "sunshine69/reporting-portal-agent-codeception",
+  "name": "osi-open-source/reporting-portal-agent-codeception",
   "type": "library",
   "description": "Specific classes to integrate Codeception-based test framework with Report Portal (http://reportportal.io/).",
   "keywords": [
@@ -8,13 +8,7 @@
     "Report Portal",
     "Codeception"
   ],
-  "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/sunshine69/client-php.git"
-        }
-    ],
-  "homepage": "https://github.com/sunshine69/reporting-portal-agent-codeception",
+  "homepage": "https://github.com/osi-open-source/reporting-portal-agent-codeception",
   "license": "MIT",
   "authors": [
     {
@@ -28,10 +22,10 @@
       "role": "Developer"
     }
   ],
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "require": {
     "codeception/codeception": "*",
-    "sunshine69/reportportal/basic": "dev-tagging-support-and-more-attributes"
+    "reportportal/basic": "1.0.x-dev"
   },
   "autoload": {
     "classmap": [
