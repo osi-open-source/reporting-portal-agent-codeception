@@ -98,10 +98,26 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
      */
     public function beforeSuite(SuiteEvent $e)
     {
+        $suiteBaseName = $e->getSuite()->getBaseName();
         if ($this->isFirstSuite == false) {
             $this->configureClient();
             try {
-                self::$httpService->launchTestRun($this->launchName, $this->launchDescription, ReportPortalHTTPService::DEFAULT_LAUNCH_MODE, []);
+                $lookupEnvVar = function($matches) {
+                    return getenv($matches[1]);
+                };
+                $ptn = '/\{([^\{\}\s]+)\}/';
+                $tagsString = $this->config['tags'] ?? "";
+                if ($tagsString !== "") {
+                    $tagsString = preg_replace_callback($ptn, $lookupEnvVar, $tagsString);
+                    $tags = explode(",", $tagsString);
+                } else {
+                    $tags = array(
+                        $suiteBaseName
+                    );
+                }
+                $launchDescription = $this->launchDescription;
+                $this->launchDescription = preg_replace_callback($ptn, $lookupEnvVar, $launchDescription);
+                self::$httpService->launchTestRun($this->launchName, $this->launchDescription, ReportPortalHTTPService::DEFAULT_LAUNCH_MODE, $tags);
             } catch (\Throwable $e) {
                 $this->connectionFailed = true;
                 if(!$this->allowFailure) {
@@ -114,7 +130,6 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
         if($this->connectionFailed) {
             return;
         }
-        $suiteBaseName = $e->getSuite()->getBaseName();
         $response = self::$httpService->createRootItem($suiteBaseName, $suiteBaseName . ' tests', []);
         $this->rootItemID = self::getID($response);
     }
