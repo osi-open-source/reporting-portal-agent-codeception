@@ -178,7 +178,9 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
         if (array_key_exists(self::EXAMPLE_JSON_WORD, $arrayWithParams)) {
             $exampleParams = $arrayWithParams[self::EXAMPLE_JSON_WORD];
             foreach ($exampleParams as $key => $value) {
-                $stringWithParams = $stringWithParams . $value . '; ';
+                if (! is_array($value)) {
+                    $stringWithParams = $stringWithParams . $value . '; ';
+                }
             }
             if (!empty($stringWithParams)) {
                 $stringWithParams = substr($stringWithParams, 0, -2);
