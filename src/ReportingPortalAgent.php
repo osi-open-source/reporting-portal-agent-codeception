@@ -38,7 +38,7 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
     private $allowFailure;
     private $connectionFailed;
 
-    private $rootItemID;
+    private $rootItemID = "";
     private $testItemID;
     private $stepItemID;
     private $lastFailedStepItemID;
@@ -89,6 +89,7 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
         $baseURI = sprintf(ReportPortalHTTPService::BASE_URI_TEMPLATE, $host);
         ReportPortalHTTPService::configureClient($UUID, $baseURI, $host, $timeZone, $projectName, $isHTTPErrorsAllowed);
         self::$httpService = new ReportPortalHTTPService();
+        self::$httpService::$launchID = $this->config['launchID'] ?? self::$httpService::EMPTY_ID;
     }
 
     /**
@@ -117,7 +118,12 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
                 }
                 $launchDescription = $this->launchDescription;
                 $this->launchDescription = preg_replace_callback($ptn, $lookupEnvVar, $launchDescription);
-                self::$httpService->launchTestRun($this->launchName, $this->launchDescription, ReportPortalHTTPService::DEFAULT_LAUNCH_MODE, $tags);
+                if ($this::$httpService::$launchID == $this::$httpService::EMPTY_ID) {
+                    self::$httpService->launchTestRun($this->launchName, $this->launchDescription, ReportPortalHTTPService::DEFAULT_LAUNCH_MODE, $tags);
+                } else {
+                    $response = self::$httpService->createRootItem($this->launchName, $this->launchDescription, $tags);
+                    $this->rootItemID = self::getID($response);
+                }
             } catch (\Throwable $e) {
                 $this->connectionFailed = true;
                 if(!$this->allowFailure) {
@@ -130,8 +136,10 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
         if($this->connectionFailed) {
             return;
         }
-        $response = self::$httpService->createRootItem($suiteBaseName, $suiteBaseName . ' tests', []);
-        $this->rootItemID = self::getID($response);
+        if ($this::$rootItemID == "") {
+            $response = self::$httpService->createRootItem($suiteBaseName, $suiteBaseName . ' tests', []);
+            $this->rootItemID = self::getID($response);
+        }
     }
 
     /**
