@@ -118,7 +118,7 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
                 }
                 $launchDescription = $this->launchDescription;
                 $this->launchDescription = preg_replace_callback($ptn, $lookupEnvVar, $launchDescription);
-                if ($this::$httpService::$launchID == $this::$httpService::EMPTY_ID) {
+                if (self::$httpService::$launchID == self::$httpService::EMPTY_ID) {
                     self::$httpService->launchTestRun($this->launchName, $this->launchDescription, ReportPortalHTTPService::DEFAULT_LAUNCH_MODE, $tags);
                 } else {
                     $response = self::$httpService->createRootItem($this->launchName, $this->launchDescription, $tags);
