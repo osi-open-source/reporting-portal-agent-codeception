@@ -89,7 +89,7 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
         $baseURI = sprintf(ReportPortalHTTPService::BASE_URI_TEMPLATE, $host);
         ReportPortalHTTPService::configureClient($UUID, $baseURI, $host, $timeZone, $projectName, $isHTTPErrorsAllowed);
         self::$httpService = new ReportPortalHTTPService();
-        self::$httpService::$launchID = $this->config['launchID'] ?? self::$httpService::EMPTY_ID;
+        self::$httpService->setLaunchID($this->config['launchUUID'] ?? self::$httpService::EMPTY_ID);
     }
 
     /**
@@ -118,7 +118,7 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
                 }
                 $launchDescription = $this->launchDescription;
                 $this->launchDescription = preg_replace_callback($ptn, $lookupEnvVar, $launchDescription);
-                if (self::$httpService::$launchID == self::$httpService::EMPTY_ID) {
+                if (self::$httpService->getLaunchID() == self::$httpService::EMPTY_ID) {
                     self::$httpService->launchTestRun($this->launchName, $this->launchDescription, ReportPortalHTTPService::DEFAULT_LAUNCH_MODE, $tags);
                 } else {
                     $response = self::$httpService->createRootItem($this->launchName, $this->launchDescription, $tags);
@@ -136,7 +136,7 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
         if($this->connectionFailed) {
             return;
         }
-        if ($this::$rootItemID == "") {
+        if ($this->rootItemID == "") {
             $response = self::$httpService->createRootItem($suiteBaseName, $suiteBaseName . ' tests', []);
             $this->rootItemID = self::getID($response);
         }
@@ -152,7 +152,11 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
         if($this->connectionFailed) {
             return;
         }
-        self::$httpService->finishRootItem();
+        if (($this->config['launchUUID'] ?? "NOT_SET") == "NOT_SET"){
+            self::$httpService->finishRootItem("");
+        } else {
+            self::$httpService->finishRootItem($this->launchDescription);
+        }
     }
 
     /**
