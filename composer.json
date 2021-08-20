@@ -25,7 +25,7 @@
   "minimum-stability": "stable",
   "require": {
     "codeception/codeception": "*",
-    "reportportal/base": "dev-go1custom"
+    "reportportal/basic": "1.0.x-dev"
   },
   "autoload": {
     "classmap": [
