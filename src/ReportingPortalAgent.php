@@ -335,7 +335,7 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
         $stepAsString = $e->getStep()->toString(self::STRING_LIMIT);
         $this->isCommentStep = strpos($stepName, self::COMMENT_STER_STRING) !== false;
         if ($this->isCommentStep) {
-            $stepName = $stepAsString ;
+            $stepName = $stepAsString;
         }
         $stepName = substr( $stepName, 0, self::REPORTPORTAL_ITEM_NAME_LIMIT );
         $response = self::$httpService->startChildItem($this->testItemID, '', $stepName, ItemTypesEnum::STEP, []);
