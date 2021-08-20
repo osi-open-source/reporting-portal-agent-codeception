@@ -434,6 +434,12 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
      */
     private static function getID(Response $HTTPResponse)
     {
-        return json_decode($HTTPResponse->getBody(), true)['id'];
+        $result = json_decode($HTTPResponse->getBody(), true);
+        try {
+            return $result['id'];
+        } catch (Exception $e) {
+            print_r($result);
+            print_r($e->getMessage());
+        }
     }
 }
