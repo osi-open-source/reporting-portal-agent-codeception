@@ -20,6 +20,7 @@ use \Codeception\Event\PrintResultEvent as PrintResultEvent;
 class ReportingPortalAgent extends \Codeception\Platform\Extension
 {
     const STRING_LIMIT = 20000;
+    const REPORTPORTAL_ITEM_NAME_LIMIT = 1024;
     const COMMENT_STER_STRING = '$this->getScenario()->comment($description);';
     const PICTURE_CONTENT_TYPE = 'png';
     const WEBDRIVER_MODULE_NAME = 'WebDriver';
@@ -336,6 +337,7 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
         if ($this->isCommentStep) {
             $stepName = $stepAsString;
         }
+        $stepName = substr( $stepName, 0, self::REPORTPORTAL_ITEM_NAME_LIMIT );
         $response = self::$httpService->startChildItem($this->testItemID, '', $stepName, ItemTypesEnum::STEP, []);
         $this->stepItemID = self::getID($response);
         self::$httpService->setStepItemID($this->stepItemID);
@@ -434,6 +436,12 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
      */
     private static function getID(Response $HTTPResponse)
     {
-        return json_decode($HTTPResponse->getBody(), true)['id'];
+        $result = json_decode($HTTPResponse->getBody(), true);
+        try {
+            return $result['id'];
+        } catch (Exception $e) {
+            print_r($result);
+            print_r($e->getMessage());
+        }
     }
 }
