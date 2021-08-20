@@ -20,6 +20,7 @@ use \Codeception\Event\PrintResultEvent as PrintResultEvent;
 class ReportingPortalAgent extends \Codeception\Platform\Extension
 {
     const STRING_LIMIT = 20000;
+    const REPORTPORTAL_ITEM_NAME_LIMIT = 1024;
     const COMMENT_STER_STRING = '$this->getScenario()->comment($description);';
     const PICTURE_CONTENT_TYPE = 'png';
     const WEBDRIVER_MODULE_NAME = 'WebDriver';
@@ -334,8 +335,9 @@ class ReportingPortalAgent extends \Codeception\Platform\Extension
         $stepAsString = $e->getStep()->toString(self::STRING_LIMIT);
         $this->isCommentStep = strpos($stepName, self::COMMENT_STER_STRING) !== false;
         if ($this->isCommentStep) {
-            $stepName = $stepAsString;
+            $stepName = $stepAsString ;
         }
+        $stepName = substr( $stepName, 0, self::REPORTPORTAL_ITEM_NAME_LIMIT );
         $response = self::$httpService->startChildItem($this->testItemID, '', $stepName, ItemTypesEnum::STEP, []);
         $this->stepItemID = self::getID($response);
         self::$httpService->setStepItemID($this->stepItemID);
